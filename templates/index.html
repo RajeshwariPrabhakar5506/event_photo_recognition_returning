@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Face Finder Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        #results-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .card {
+            transition: all 0.25s ease-in-out;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+        .card:hover {
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08) !important;
+            transform: translateY(-2px);
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        /* Custom smooth scrollbar for code elements */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+<body class="bg-body-tertiary">
+
+    <nav class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1 d-flex align-items-center">
+                <i class="bi bi-cpu text-info me-2 fs-4"></i> Event Face Finder Admin Dashboard
+            </span>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        
+        <div id="alert-placeholder"></div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-bottom-0">
+                        <h5 class="mb-0 text-primary d-flex align-items-center">
+                            <i class="bi bi-person-plus-fill me-2 fs-5"></i> Step 1: Attendee Registration
+                        </h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <p class="card-text text-secondary">Share your custom user registration link with guests to compile their face encodings database.</p>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdtAOxyQEBwVhPxefJbnpZe7Iz1pvnd-312W6Szj_Z0YUdCBQ/viewform?usp=dialog" target="_blank" class="btn btn-outline-primary w-100 mb-3 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-box-arrow-up-right me-2"></i> Open Google Form
+                        </a>
+                        <hr class="text-muted my-3">
+                        <p class="card-text text-muted small">Execute this command to fetch target data models from connected cloud files sheets and index new embeddings matrix parameters.</p>
+                        <button id="sync-btn" class="btn btn-primary w-100 action-btn" data-original-text="<i class='bi bi-arrow-repeat me-2'></i> Sync & Index Registered Attendees">
+                            <i class="bi bi-arrow-repeat me-2"></i> Sync & Index Registered Attendees
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-bottom-0">
+                        <h5 class="mb-0 text-success d-flex align-items-center">
+                            <i class="bi bi-cloud-upload-fill me-2"></i> Step 2: Upload Event Photos
+                        </h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <p class="card-text text-secondary">Upload image datasets from the event directly to server directories for algorithmic evaluation.</p>
+                        <form id="upload-form">
+                            <div class="mb-3">
+                                <input class="form-control" type="file" id="photo-input" name="photos" multiple required>
+                            </div>
+                            <button type="submit" id="upload-btn" class="btn btn-success w-100 action-btn" data-original-text="<i class='bi bi-upload me-2'></i> Upload Batch to Server">
+                                <i class="bi bi-upload me-2"></i> Upload Batch to Server
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white py-3 border-bottom-0">
+                        <h5 class="mb-0 text-info d-flex align-items-center">
+                            <i class="bi bi-gear-fill me-2"></i> Step 3: Process & Send
+                        </h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <p class="card-text text-secondary">Execute the matching models over local structures, then activate mail loops to dispatch attached picture sets.</p>
+                        <div class="d-grid gap-3">
+                            <button id="match-btn" class="btn btn-secondary action-btn" data-original-text="<i class='bi bi-people-fill me-2'></i> Run Face Matching Model">
+                                <i class="bi bi-people-fill me-2"></i> Run Face Matching Model
+                            </button>
+                            
+                            <div class="p-3 bg-light border rounded">
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="email-safety-lock">
+                                    <label class="form-check-label fw-bold text-dark" for="email-safety-lock">
+                                        🔓 Unlock Email Broadcast System
+                                    </label>
+                                </div>
+                                <span class="text-muted small d-block">
+                                    Activate this safety lock mechanism to verify data integrity reports before triggering SMTP mailer engines.
+                                </span>
+                            </div>
+
+                            <button id="email-btn" class="btn btn-danger action-btn" data-original-text="<i class='bi bi-send-fill me-2'></i> Email Matched Photos to Attendees" disabled>
+                                <i class="bi bi-send-fill me-2"></i> Email Matched Photos to Attendees
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 text-warning d-flex align-items-center">
+                            <i class="bi bi-clipboard-check-fill me-2"></i> Match Results
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted small mb-0" id="results-placeholder">No active computations. Run "Run Face Matching Model" to visualize results here.</p>
+                        <div id="results-list" class="list-group">
+                            </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 text-dark d-flex align-items-center">
+                            <i class="bi bi-terminal-fill me-2"></i> System Terminal
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <pre id="log-output" class="bg-dark text-white p-3 rounded-bottom m-0" style="height: 300px; overflow-y: scroll; font-size: 0.85rem;">Dashboard Initialized. Waiting on operations...</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        const alertPlaceholder = document.getElementById('alert-placeholder');
+        const logOutput = document.getElementById('log-output');
+        const allButtons = document.querySelectorAll('.action-btn');
+        
+        const uploadForm = document.getElementById('upload-form');
+        const uploadBtn = document.getElementById('upload-btn');
+        const photoInput = document.getElementById('photo-input');
+        
+        const syncBtn = document.getElementById('sync-btn');
+        const matchBtn = document.getElementById('match-btn');
+        const emailBtn = document.getElementById('email-btn');
+        const emailSafetyLock = document.getElementById('email-safety-lock');
+        
+        const resultsPlaceholder = document.getElementById('results-placeholder');
+        const resultsList = document.getElementById('results-list');
+
+        // Manage Safety Locks across modern screen clients securely
+        emailSafetyLock.addEventListener('change', function() {
+            emailBtn.disabled = !this.checked;
+            if (this.checked) {
+                emailBtn.classList.remove('btn-danger');
+                emailBtn.classList.add('btn-success');
+                logMessage("Email safety loop lock disengaged: BROADCAST SYSTEM READY.");
+            } else {
+                emailBtn.classList.remove('btn-success');
+                emailBtn.classList.add('btn-danger');
+                logMessage("Email safety loop lock engaged: BROADCAST SYSTEM SECURED.");
+            }
+        });
+
+        function showAlert(message, type = 'success') {
+            alertPlaceholder.innerHTML = ''; 
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = [
+                `<div class="alert alert-${type} alert-dismissible shadow-sm" role="alert">`,
+                `   <div class="d-flex align-items-center"><i class="bi bi-info-circle-fill me-2"></i> ${message}</div>`,
+                '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                '</div>'
+            ].join('');
+            alertPlaceholder.append(wrapper);
+        }
+
+        function logMessage(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logOutput.textContent += `\n[${timestamp}] > ${message}`;
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+
+        function setLoadingState(button, isLoading) {
+            if (isLoading) {
+                allButtons.forEach(btn => btn.disabled = true);
+                emailSafetyLock.disabled = true;
+                button.innerHTML = `
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Running process...
+                `;
+            } else {
+                allButtons.forEach(btn => btn.disabled = false);
+                emailSafetyLock.disabled = false;
+                button.innerHTML = button.dataset.originalText;
+                emailBtn.disabled = !emailSafetyLock.checked;
+            }
+        }
+        
+        function showResults(matches) {
+            resultsList.innerHTML = '';
+            
+            if (!matches || Object.keys(matches).length === 0) {
+                resultsPlaceholder.textContent = "No attendee matches identified in the uploaded photos.";
+                resultsPlaceholder.style.display = 'block';
+                return;
+            }
+            
+            resultsPlaceholder.style.display = 'none';
+            
+            for (const [email, data] of Object.entries(matches)) {
+                const photoCount = data.photos.length;
+                const item = document.createElement('div');
+                item.className = 'list-group-item d-flex justify-content-between align-items-start border-start-0 border-end-0 px-1 py-3';
+                item.innerHTML = `
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold text-dark">${data.name}</div>
+                        <small class="text-muted d-block" style="font-size: 0.8rem;">${email}</small>
+                    </div>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">${photoCount} ${photoCount === 1 ? 'photo' : 'photos'}</span>
+                `;
+                resultsList.appendChild(item);
+            }
+        }
+
+        async function runScript(button, url, startMessage) {
+            setLoadingState(button, true);
+            logMessage(startMessage);
+            
+            try {
+                const response = await fetch(url, { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showAlert(data.message, 'success');
+                    logMessage(`SUCCESS: ${data.message}`);
+                    if (data.matches) {
+                        showResults(data.matches);
+                    }
+                } else {
+                    showAlert(data.message, 'danger');
+                    logMessage(`ERROR: ${data.message}`);
+                }
+                logMessage("--- System Output Stream ---");
+                logMessage(data.output || "No data stream returned.");
+                logMessage("----------------------------");
+
+            } catch (error) {
+                const errorMsg = `Server Interface Interruption: ${error.message}`;
+                showAlert(errorMsg, 'danger');
+                logMessage(errorMsg);
+            } finally {
+                setLoadingState(button, false);
+            }
+        }
+
+        // --- Controller Upload Form Bindings ---
+
+        uploadForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            setLoadingState(uploadBtn, true);
+            logMessage("Starting target gallery upload batch stream transfer...");
+
+            const formData = new FormData();
+            for (const file of photoInput.files) {
+                formData.append('photos', file);
+            }
+
+            try {
+                const response = await fetch('/upload-photos', { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showAlert(data.message, 'success');
+                    logMessage(`UPLOAD SUCCESS: ${data.message}`);
+                } else {
+                    showAlert(data.message, 'danger');
+                    logMessage(`UPLOAD ERROR: ${data.message}`);
+                }
+                uploadForm.reset();
+
+            } catch (error) {
+                const errorMsg = `File Upload IO Error: ${error.message}`;
+                showAlert(errorMsg, 'danger');
+                logMessage(errorMsg);
+            } finally {
+                setLoadingState(uploadBtn, false);
+            }
+        });
+
+        syncBtn.addEventListener('click', () => {
+            runScript(syncBtn, '/sync-users', 'Syncing Google Forms database data profiles and updating landmark tables... Please wait.');
+        });
+
+        matchBtn.addEventListener('click', () => {
+            runScript(matchBtn, '/run-matching', 'Starting computer vision face evaluation on global folders... This may take time.');
+        });
+
+        emailBtn.addEventListener('click', () => {
+            runScript(
+                emailBtn, 
+                '/send-emails', 
+                'Spooling background secure SMTP transmission queues with matched multi-part document photo payloads...'
+            );
+        });
+    </script>
+</body>
+</html>

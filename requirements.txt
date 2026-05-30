@@ -1,0 +1,10 @@
+flask
+face_recognition
+opencv-python
+numpy
+gspread
+google-api-python-client
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+Pillow

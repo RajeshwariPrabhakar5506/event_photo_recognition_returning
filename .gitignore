@@ -1,0 +1,7 @@
+.vscode/
+venv/
+event_photos/
+reference_photos/
+encodings.pkl
+results.json
+credentials.json
